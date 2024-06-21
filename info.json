@@ -1,5 +1,5 @@
 {
-  "id": "[plugin].com.pot-app.lingva",
+  "id": "plugin.com.pot-app.lingva",
   "plugin_type": "translate",
   "icon": "lingva.svg",
   "display": "Lingva",

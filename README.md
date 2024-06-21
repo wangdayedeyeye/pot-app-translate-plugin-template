@@ -13,7 +13,7 @@
 
 编辑 `info.json` 文件，修改以下字段：
 
-- `id`：插件唯一 id，必须以`[plugin]`开头，例如 `[plugin].com.pot-app.lingva`
+- `id`：插件唯一 id，必须以`plugin`开头，例如 `plugin.com.pot-app.lingva`
 - `homepage`: 插件主页，填写你的仓库地址即可，例如 `https://github.com/pot-app/pot-app-translate-plugin-template`
 - `display`: 插件显示名称，例如 `Lingva`
 - `icon`: 插件图标，例如 `lingva.svg`
@@ -77,7 +77,7 @@ setResult("result");
 
 1. 将 `main.js` 文件和 `info.json` 以及图标文件压缩为 zip 文件。
 
-2. 将文件重命名为`<插件id>.potext`，例如`[plugin].com.pot-app.lingva.potext`,即可得到 pot 需要的插件。
+2. 将文件重命名为`<插件id>.potext`，例如`plugin.com.pot-app.lingva.potext`,即可得到 pot 需要的插件。
 
 ## 自动编译打包
 
