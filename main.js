@@ -1,15 +1,16 @@
 async function translate(text, from, to, options) {
-    const { config, tauriFetch: fetch } = options;
+    const { config, utils } = options;
+    const { tauriFetch } = utils;
     let { requestPath: url } = config;
     let plain_text = text.replaceAll("/", "@@");
     let encode_text = encodeURIComponent(plain_text);
-    if (len(url) === 0) {
+    if (url === undefined || url.length === 0) {
         url = "lingva.pot-app.com"
     }
-    if (!url.starts_with("http")) {
+    if (!url.startsWith("http")) {
         url = `https://${url}`;
     }
-    const res = fetch(`${url}/api/v1/${from}/${to}/${encode_text}`, {
+    const res = tauriFetch(`${url}/api/v1/${from}/${to}/${encode_text}`, {
         method: 'GET',
     });
 
@@ -25,4 +26,3 @@ async function translate(text, from, to, options) {
         throw `Http Request Error\nHttp Status: ${res.status}\n${JSON.stringify(res.data)}`;
     }
 }
-
