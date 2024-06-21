@@ -1,6 +1,6 @@
 async function translate(text, from, to, options) {
     const { config, utils } = options;
-    const { tauriFetch } = utils;
+    const { tauriFetch: fetch } = utils;
     let { requestPath: url } = config;
     let plain_text = text.replaceAll("/", "@@");
     let encode_text = encodeURIComponent(plain_text);
@@ -10,7 +10,7 @@ async function translate(text, from, to, options) {
     if (!url.startsWith("http")) {
         url = `https://${url}`;
     }
-    const res = tauriFetch(`${url}/api/v1/${from}/${to}/${encode_text}`, {
+    const res = await fetch(`${url}/api/v1/${from}/${to}/${encode_text}`, {
         method: 'GET',
     });
 
