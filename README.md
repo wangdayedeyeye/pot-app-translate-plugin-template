@@ -44,7 +44,7 @@
 //     pluginDir: current plugin dir 
 //     osType: "Windows_NT" | "Darwin" | "Linux"
 async function translate(text, from, to, options) {
-  const { config, detect，setResult, utils } = options;
+  const { config, detect, setResult, utils } = options;
   const { http, readBinaryFile, readTextFile, Database, CryptoJS, run, cacheDir, pluginDir, osType } = utils;
   const { fetch, Body } = http;
 }
