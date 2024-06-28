@@ -31,10 +31,23 @@
 #### 输入参数
 
 ```javascript
-    async function translate(text, from, to, options) {
-      const { config, utils，setResult } = options;
-      const { tauriFetch } = utils;
-    }
+// config: config map
+// detect: detected source language
+// setResult: function to set result text
+// utils: some tools
+//     http: tauri http module
+//     readBinaryFile: function
+//     readTextFile: function
+//     Database: tauri Database class
+//     CryptoJS: CryptoJS module
+//     cacheDir: cache dir path
+//     pluginDir: current plugin dir 
+//     osType: "Windows_NT" | "Darwin" | "Linux"
+async function translate(text, from, to, options) {
+  const { config, detect，setResult, utils } = options;
+  const { http, readBinaryFile, readTextFile, Database, CryptoJS, run, cacheDir, pluginDir, osType } = utils;
+  const { fetch, Body } = http;
+}
 ```
 
 #### 返回值
