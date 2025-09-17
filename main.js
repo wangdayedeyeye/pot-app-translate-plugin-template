@@ -11,7 +11,8 @@ async function translate(text, from, to, options) {
         url = `http://${url}`;
     }
     // 构建适合大模型的prompt（Construct prompt suitable for large model）
-    const prompt = buildTranslationPrompt(text, from, to);
+    // const prompt = buildVariableNamePrompt(text);
+    const prompt = text;
     
     try {
         const res = await fetch(`${url}/v1/chat/completions`, {
@@ -27,7 +28,7 @@ async function translate(text, from, to, options) {
                     messages: [
                         {
                             role: "system",
-                            content: "你是一个专注于代码文本翻译的专业助手，需精准处理各类代码相关元素的翻译：1.对变量名（含驼峰式、下划线式等风格，如`userName`、`user_name`）、包名（如`java.util`、`numpy`）、类名、函数名等代码标识符，优先采用技术领域通用译法，无通用译法则结合其语义直译，确保翻译后仍符合代码可读性逻辑；2.若代码文本中包含注释（单行注释、多行注释），需完整保留注释格式，仅翻译注释内容，不改动代码语法结构；3.严格遵循“只返回翻译结果，不添加任何解释或额外内容”的原则，确保输出可直接用于代码场景。"
+                            content: "你是一个专业的变量名还原助手。你的任务是将多单词构成的变量名（如驼峰命名法、下划线命名法等）拆分为单个单词，并提供每个单词的中文翻译。请严格按照要求的格式输出：每行一个单词及其中文翻译，格式为'单词 - 中文'。不要添加任何额外的解释或说明。"
                         },
                         {
                             role: "user",
@@ -48,12 +49,12 @@ async function translate(text, from, to, options) {
                 const translation = result.choices[0].message.content.trim();
                 
                 // 清理可能的格式标记（Clean up possible format markers）
-                const cleanTranslation = cleanTranslationResult(translation);
+                const cleanTranslation = cleanVariableNameResult(translation);
                 
                 if (cleanTranslation) {
                     return cleanTranslation;
                 } else {
-                    throw "翻译结果为空（Translation result is empty）";
+                    throw "变量名拆分结果为空（Variable name splitting result is empty）";
                 }
             } else {
                 throw "模型返回格式错误: " + JSON.stringify(result) + "（Model return format error）";
@@ -69,50 +70,17 @@ async function translate(text, from, to, options) {
         throw error;
     }
 }
-// 构建翻译提示词（Construct translation prompt）
-function buildTranslationPrompt(text, from, to) {
-    const languageMap = {
-        'auto': '自动检测（Auto-detect）',
-        'zh': '中文（Chinese）',
-        'zh_HANT': '繁体中文（Traditional Chinese）',
-        'en': '英文（English）',
-        'ja': '日文（Japanese）',
-        'ko': '韩文（Korean）',
-        'fr': '法文（French）',
-        'es': '西班牙文（Spanish）',
-        'ru': '俄文（Russian）',
-        'de': '德文（German）',
-        'it': '意大利文（Italian）',
-        'tr': '土耳其文（Turkish）',
-        'pt': '葡萄牙文（Portuguese）',
-        'vi': '越南文（Vietnamese）',
-        'id': '印尼文（Indonesian）',
-        'th': '泰文（Thai）',
-        'ms': '马来文（Malay）',
-        'ar': '阿拉伯文（Arabic）',
-        'hi': '印地文（Hindi）',
-        'mn': '蒙古文（Mongolian）',
-        'km': '高棉文（Khmer）',
-        'no': '挪威文（Norwegian）',
-        'fa': '波斯文（Persian）'
-    };
-    
-    const fromLang = languageMap[from] || from;
-    const toLang = languageMap[to] || to;
-    
-    if (from === 'auto') {
-        return `请将以下文本（若含代码元素，需按规则处理：变量名/包名/类名/函数名优先用技术通用译法，无通用译法则直译；注释保留格式仅译内容）翻译成${toLang}：\n\n${text}`;
-    } else {
-        return `请将以下${fromLang}文本（若含代码元素，需按规则处理：变量名/包名/类名/函数名优先用技术通用译法，无通用译法则直译；注释保留格式仅译内容）翻译成${toLang}：\n\n${text}`;
-    }
-}
-// 清理翻译结果（Clean up translation result）
-function cleanTranslationResult(translation) {
+// 构建变量名拆分提示词（Construct variable name splitting prompt）
+// function buildVariableNamePrompt(text) {
+//     return `# 角色：变量名还原助手\n1. 功能：将多单词构成的变量名拆分为单个单词（空格分隔）；\n2. 输出：拆分后的每个单词及其中文翻译，一行一个（格式示例：单词 - 中文）。\n\n${text}`;
+// }
+// 清理变量名拆分结果（Clean up variable name splitting result）
+function cleanVariableNameResult(result) {
     // 移除可能的markdown格式标记（Remove possible Markdown format markers）
-    let cleaned = translation.replace(/```[\s\S]*?```/g, '');
+    let cleaned = result.replace(/```[\s\S]*?```/g, '');
     
     // 移除常见的前缀（Remove common prefixes）
-    cleaned = cleaned.replace(/^(翻译结果?[：:]?\s*|译文[：:]?\s*|结果[：:]?\s*|Translation Result[:]?\s*|Translated Text[:]?\s*|Result[:]?\s*)/i, '');
+    cleaned = cleaned.replace(/^(拆分结果?[：:]?\s*|结果[：:]?\s*|变量名拆分[：:]?\s*|Result[:]?\s*|Variable Name Split[:]?\s*)/i, '');
     
     // 移除引号（Remove quotation marks）
     cleaned = cleaned.replace(/^["']|["']$/g, '');
