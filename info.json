@@ -1,8 +1,8 @@
 {
-  "id": "plugin.com.pot-app.qwen3-4b",
+  "id": "plugin.com.pot-app.code-translate",
   "plugin_type": "translate",
   "icon": "lingva.svg",
-  "display": "qwen3-4b",
+  "display": "code-translate",
   "homepage": "https://github.com/wangdayedeyeye/pot-app-translate-plugin-template",
   "needs": [{ "key": "requestPath", "display": "请求地址" }],
   "language": {
